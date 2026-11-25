@@ -20,16 +20,43 @@ It writes fresh, exam-style questions from the official Sitecore docs, runs shor
 
 The skill reads the docs through this MCP server: `https://sitecore.mcp.kapa.ai`
 
-- **claude.ai:** Settings, Connectors, add a custom connector with the URL above.
-- **Claude Code:**
+Name the server `Sitecore_docs` (capital S, underscore). The skill expects the tool name `mcp__Sitecore_docs__search_sitecore_knowledge_sources`.
+
+- **claude.ai or the Claude desktop app:** Settings, Connectors, add a custom connector with the URL above.
+- **Claude Code, project file (recommended):** create a `.mcp.json` file in your project folder:
+  ```json
+  {
+    "mcpServers": {
+      "Sitecore_docs": {
+        "type": "http",
+        "url": "https://sitecore.mcp.kapa.ai"
+      }
+    }
+  }
   ```
-  claude mcp add --transport http sitecore-docs https://sitecore.mcp.kapa.ai
+- **Claude Code, command line:**
   ```
+  claude mcp add --transport http Sitecore_docs https://sitecore.mcp.kapa.ai
+  ```
+
+Add the server **before** you start the session. A server added during a session is not loaded until you start a new session. If the server asks you to sign in, run `/mcp` and follow the steps.
 
 ### 2. Install the skill
 
 - **claude.ai:** zip the `skills/sitecoreai-exam-coach` folder and upload it under Settings, Capabilities, Skills.
 - **Claude Code:** copy the `skills/sitecoreai-exam-coach` folder to `~/.claude/skills/` (all projects) or `.claude/skills/` (one project).
+
+### 3. Check that it works
+
+Start a new session and ask: "What is Sitecore Content Serialization in SitecoreAI?" You should get answers from doc.sitecore.com. Then say "Coach me for the SitecoreAI CMS Developer exam."
+
+## Troubleshooting
+
+- **The server does not show up in the Claude desktop app** after `claude mcp add`: the app may not read servers added through the command line. Use the `.mcp.json` file in your project folder, or add it under Settings, Connectors as a custom connector. Then start a new session.
+- **`claude mcp list` says "Needs authentication":** run `/mcp` in a session and sign in.
+- **`/mcp reconnect` says no server found:** the server was added after the session started. Start a new session.
+- **Duplicate servers:** if you added the server under two names, remove the old one, for example `claude mcp remove sitecore-docs -s user`.
+- **Different server name:** if you use a name other than `Sitecore_docs`, the skill may not find the tool. Rename the server, or ask Claude to load the docs search tool with ToolSearch.
 
 ## How to use it
 
